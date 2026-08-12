@@ -20,6 +20,7 @@ export const initialJourney = {
   recommendation: null,
   type_rule: null,
   inference: null,
+  inference_feedback: null,
   usage_report: null,
   privacy_risk: null,
 
@@ -156,6 +157,34 @@ function journeyReducer(state, action) {
       return { ...state, recommendation: action.recommendation, type_rule: action.type_rule };
     }
 
+    case "SET_INFERENCE": {
+      return { ...state, inference: action.inference };
+    }
+
+    case "SET_INFERENCE_FEEDBACK": {
+      return { ...state, inference_feedback: action.feedback };
+    }
+
+    case "COMPLETE_STEP6": {
+      const { usage_report, privacy_risk } = action;
+      // 전후 비교 기준이 되는 스냅샷은 STEP6 진입 시 1회만 만들고 이후 덮어쓰지 않는다.
+      const before_snapshot = state.before_snapshot ?? {
+        consent: { ...state.consent },
+        data_controls: { ...state.data_controls },
+        usage_report,
+        privacy_risk,
+        recommendation_signature: {
+          type: state.recommendation?.type ?? null,
+          policies: (state.recommendation?.policies ?? []).map((p) => p.policy),
+        },
+        // STEP7 활용도 재계산에 유형 판단 근거가 필요해 used_fields도 함께 담는다.
+        type_rule: {
+          used_fields: state.type_rule?.used_fields ?? [],
+        },
+      };
+      return { ...state, usage_report, privacy_risk, before_snapshot };
+    }
+
     case "RESET": {
       return { ...initialJourney };
     }
@@ -182,6 +211,11 @@ export function JourneyProvider({ children }) {
       setAnswers: (answers) => dispatch({ type: "SET_ANSWERS", answers }),
       setRecommendation: (recommendation, type_rule) =>
         dispatch({ type: "SET_RECOMMENDATION", recommendation, type_rule }),
+      setInference: (inference) => dispatch({ type: "SET_INFERENCE", inference }),
+      setInferenceFeedback: (feedback) =>
+        dispatch({ type: "SET_INFERENCE_FEEDBACK", feedback }),
+      completeStep6: (usage_report, privacy_risk) =>
+        dispatch({ type: "COMPLETE_STEP6", usage_report, privacy_risk }),
       reset: () => dispatch({ type: "RESET" }),
     }),
     []
