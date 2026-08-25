@@ -17,7 +17,7 @@ export default function Step2Page({ onBack, onNext }) {
 
   return (
     <div className="screen">
-      <StepHeader step={2} total={7} title="개인정보 제공 범위를 선택해 주세요" />
+      <StepHeader step={2} total={9} title="개인정보 제공 범위를 선택해 주세요" />
 
       {profile && (
         <p className="context-line">

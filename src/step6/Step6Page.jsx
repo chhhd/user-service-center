@@ -33,7 +33,7 @@ export default function Step6Page({ onBack, onNext }) {
 
   return (
     <div className="screen">
-      <StepHeader step={6} total={7} title="데이터 활용 리포트" />
+      <StepHeader step={6} total={9} title="데이터 활용 리포트" />
 
       <p className="screen-desc">
         당신은 총 <strong>{usageReport.consented_count}개</strong>의 정보 제공에 동의했어요. 각 정보가 실제로

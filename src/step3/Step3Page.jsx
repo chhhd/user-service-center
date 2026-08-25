@@ -54,7 +54,7 @@ export default function Step3Page({ onBack, onNext }) {
 
   return (
     <div className="screen">
-      <StepHeader step={3} total={7} title="금융생활 정보를 입력해 주세요" />
+      <StepHeader step={3} total={9} title="금융생활 정보를 입력해 주세요" />
 
       {profile && (
         <p className="context-line">
