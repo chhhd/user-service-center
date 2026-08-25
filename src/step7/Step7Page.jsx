@@ -5,7 +5,7 @@ import FieldConsentGroup from "../step2/FieldConsentGroup";
 import DataControlsPanel from "../step2/DataControlsPanel";
 import QuestionList from "../step3/QuestionList";
 import ChangeSummary from "./ChangeSummary";
-import { buildRecalcAnswers, getEditableInputFieldIds } from "./recalculate";
+import { buildRecalcAnswers, getEditableInputFieldIds, hasChangedFromSnapshot } from "./recalculate";
 import { compareSnapshots } from "./compareSnapshots";
 import { useJourney } from "../shared/journeyStore";
 import { getConsentedFieldIds } from "../shared/consentRules";
@@ -57,8 +57,9 @@ export default function Step7Page({ onBack, onNext }) {
       before_snapshot,
       after: { consent, recommendation, type_rule, usage_report, privacy_risk },
     });
+    const edited = hasChangedFromSnapshot({ before_snapshot, consent, data_controls });
 
-    return { answers, recommendation, type_rule, inference, usage_report, privacy_risk, comparison };
+    return { answers, recommendation, type_rule, inference, usage_report, privacy_risk, comparison, edited };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canProceed, consent, data_controls, selections]);
 

@@ -186,10 +186,20 @@ function journeyReducer(state, action) {
     }
 
     case "COMPLETE_STEP7": {
-      const { answers, recommendation, type_rule, inference, usage_report, privacy_risk, comparison } =
-        action;
+      const {
+        answers,
+        recommendation,
+        type_rule,
+        inference,
+        usage_report,
+        privacy_risk,
+        comparison,
+        edited,
+      } = action;
       // STEP7에서 동의를 다시 선택하고 재계산한 결과로 전역 상태를 갱신한다.
       // before_snapshot(STEP6)은 건드리지 않아 전후 비교 기준으로 계속 남는다.
+      // edited는 STEP7을 그냥 통과했는지, 실제로 동의 내역을 바꿨는지를 구분하기 위한 값으로
+      // Step7Page가 before_snapshot과 비교해 계산한 값을 그대로 받는다 (여기서 true로 고정하지 않는다).
       return {
         ...state,
         answers,
@@ -199,7 +209,7 @@ function journeyReducer(state, action) {
         usage_report,
         privacy_risk,
         comparison,
-        edited: true,
+        edited,
       };
     }
 

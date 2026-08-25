@@ -29,3 +29,13 @@ export function getEditableInputFieldIds(consent) {
     (id) => consent[id] === true && DATA_FIELD_META[id].input_source === INPUT_SOURCE.INPUT
   );
 }
+
+/** STEP7에서 동의/데이터 활용 범위를 STEP6과 다르게 실제로 바꿨는지 판정한다.
+ *  STEP7을 그냥 통과하기만 한 경우(before_snapshot과 동일)와 구분하기 위한 값이다. */
+export function hasChangedFromSnapshot({ before_snapshot, consent, data_controls }) {
+  if (!before_snapshot) return false;
+  return (
+    JSON.stringify(consent) !== JSON.stringify(before_snapshot.consent) ||
+    JSON.stringify(data_controls) !== JSON.stringify(before_snapshot.data_controls)
+  );
+}
