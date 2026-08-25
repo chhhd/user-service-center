@@ -4,8 +4,10 @@ import ConsentModeSelect from "../step2/ConsentModeSelect";
 import FieldConsentGroup from "../step2/FieldConsentGroup";
 import DataControlsPanel from "../step2/DataControlsPanel";
 import QuestionList from "../step3/QuestionList";
+import UsageSummary from "../step6/UsageSummary";
+import DataFlowGraph from "../step6/DataFlowGraph";
 import ChangeSummary from "./ChangeSummary";
-import { buildRecalcAnswers, getEditableInputFieldIds, hasChangedFromSnapshot } from "./recalculate";
+import { buildRecalcAnswers, getEditableInputFieldIds } from "./recalculate";
 import { compareSnapshots } from "./compareSnapshots";
 import { useJourney } from "../shared/journeyStore";
 import { getConsentedFieldIds } from "../shared/consentRules";
@@ -16,12 +18,14 @@ import { buildInference } from "../step5/evaluateInferences";
 import { buildUsageReport } from "../step6/buildUsageReport";
 import { calculatePrivacyRisk } from "../step6/riskScore";
 
-// STEP7 처리 순서:
-// 1) STEP2와 동일한 동의 UI로 consent/data_controls를 다시 선택한다 (journey 전역 상태를 그 자리에서 갱신).
-// 2) 새로 동의한 INPUT 항목이 있으면 이 화면에서 바로 답하게 한다 (STEP3 질문 컴포넌트 재사용).
-// 3) 답이 모두 채워지면 recommend/inference/usageReport/privacyRisk를 STEP4~6과 동일한 순수 함수로 다시 계산하고,
-//    STEP6의 before_snapshot과 비교해 변경 요약을 실시간으로 보여준다.
-// 4) "다음"을 누르는 시점에만 재계산 결과를 journey 전역 상태에 커밋한다 (completeStep7).
+// STEP7 처리 순서 (개발 파이프라인 문서 기준):
+// 1) 수정 전(STEP6 before_snapshot) 활용 라벨을 먼저 보여준다 — 각 정보가 추천/추론/제3자 제공/장기
+//    보관 중 어디에 쓰였는지 STEP6과 동일한 컴포넌트로 다시 노출한다.
+// 2) STEP2와 동일한 동의 UI로 consent/data_controls를 다시 선택한다.
+// 3) 새로 동의한 INPUT 항목이 있으면 이 화면에서 바로 답하게 한다 (STEP3 질문 컴포넌트 재사용).
+// 4) 답이 모두 채워지면 recommend/inference/usageReport/privacyRisk를 STEP4~6과 동일한 순수 함수로
+//    다시 계산하고(recalculateJourney), before_snapshot과 비교한 결과를 실시간으로 보여준다.
+// 5) "다음"을 누르는 시점에 재계산 결과 + edited: true를 journey 전역 상태에 커밋한다 (completeStep7).
 export default function Step7Page({ onBack, onNext }) {
   const { journey, actions } = useJourney();
   const { profile, consent, consent_mode, data_controls, answers: savedAnswers, before_snapshot } = journey;
@@ -57,9 +61,8 @@ export default function Step7Page({ onBack, onNext }) {
       before_snapshot,
       after: { consent, recommendation, type_rule, usage_report, privacy_risk },
     });
-    const edited = hasChangedFromSnapshot({ before_snapshot, consent, data_controls });
 
-    return { answers, recommendation, type_rule, inference, usage_report, privacy_risk, comparison, edited };
+    return { answers, recommendation, type_rule, inference, usage_report, privacy_risk, comparison };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canProceed, consent, data_controls, selections]);
 
@@ -74,9 +77,15 @@ export default function Step7Page({ onBack, onNext }) {
       <StepHeader step={7} total={9} title="동의 내역을 다시 선택해 주세요" />
 
       <p className="screen-desc">
-        STEP6에서 확인한 활용 리포트를 참고해서 동의 범위를 자유롭게 바꿔볼 수 있어요. 바꾼 내용은 금융
-        추천·추론·위험도 계산에 그대로 다시 반영돼요.
+        각 정보가 추천·추론·제3자 제공·장기 보관 중 어디에 쓰였는지 아래에서 다시 확인하고, 동의 범위를
+        자유롭게 바꿔볼 수 있어요. 바꾼 내용은 금융 추천·추론·위험도 계산에 그대로 다시 반영돼요.
       </p>
+
+      <section className="step7-before-usage">
+        <h3 className="field-group-title">수정 전 활용 현황 (STEP6 기준)</h3>
+        <UsageSummary report={before_snapshot.usage_report} />
+        <DataFlowGraph report={before_snapshot.usage_report} />
+      </section>
 
       <ConsentModeSelect mode={consent_mode} onSelect={actions.setConsentMode} />
 
