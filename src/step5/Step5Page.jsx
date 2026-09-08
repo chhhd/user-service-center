@@ -37,7 +37,7 @@ export default function Step5Page({ onBack, onNext }) {
 
   return (
     <div className="screen">
-      <StepHeader step={5} total={7} title="AI 개인정보 추론 결과" />
+      <StepHeader step={5} total={9} title="AI 개인정보 추론 결과" />
 
       <div className="notice-banner">
         <strong>잠깐, 금융 추천은 끝났지만 더 중요한 사실이 있어요.</strong>

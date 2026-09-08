@@ -6,12 +6,14 @@ import Step3Page from "./step3/Step3Page";
 import Step4Page from "./step4/Step4Page";
 import Step5Page from "./step5/Step5Page";
 import Step6Page from "./step6/Step6Page";
-import JourneyPreview from "./shared/JourneyPreview";
+import Step7Page from "./step7/Step7Page";
+import Step8Page from "./step8/Step8Page";
+import Step9Page from "./step9/Step9Page";
 import "./App.css";
 
-// 현재 구현 범위: STEP1 ~ STEP6. STEP7 이후는 순차적으로 추가될 예정.
+// 구현 범위: STEP1 ~ STEP9 (전체 흐름 완료).
 function AppRoutes() {
-  const [route, setRoute] = useState("step1"); // "step1" ~ "step6" | "preview"
+  const [route, setRoute] = useState("step1"); // "step1" ~ "step9"
 
   if (route === "step1") {
     return <Step1Page onComplete={() => setRoute("step2")} />;
@@ -34,10 +36,18 @@ function AppRoutes() {
   }
 
   if (route === "step6") {
-    return <Step6Page onBack={() => setRoute("step5")} onNext={() => setRoute("preview")} />;
+    return <Step6Page onBack={() => setRoute("step5")} onNext={() => setRoute("step7")} />;
   }
 
-  return <JourneyPreview onRestart={() => setRoute("step1")} />;
+  if (route === "step7") {
+    return <Step7Page onBack={() => setRoute("step6")} onNext={() => setRoute("step8")} />;
+  }
+
+  if (route === "step8") {
+    return <Step8Page onBack={() => setRoute("step7")} onNext={() => setRoute("step9")} />;
+  }
+
+  return <Step9Page onRestart={() => setRoute("step1")} />;
 }
 
 export default function App() {

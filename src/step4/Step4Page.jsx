@@ -23,7 +23,7 @@ export default function Step4Page({ onBack, onNext }) {
 
   return (
     <div className="screen">
-      <StepHeader step={4} total={7} title="금융·청년정책 추천 결과" />
+      <StepHeader step={4} total={9} title="금융·청년정책 추천 결과" />
       <p className="screen-desc">
         STEP3에서 동의하고 입력한 정보를 바탕으로 금융생활 유형과 청년정책을 추천해요.
       </p>

@@ -185,6 +185,31 @@ function journeyReducer(state, action) {
       return { ...state, usage_report, privacy_risk, before_snapshot };
     }
 
+    case "COMPLETE_STEP7": {
+      const { answers, recommendation, type_rule, inference, usage_report, privacy_risk, comparison } =
+        action;
+      // STEP7에서 동의를 다시 선택하고 재계산한 결과로 전역 상태를 갱신한다.
+      // before_snapshot(STEP6)은 건드리지 않아 전후 비교 기준으로 계속 남는다.
+      // 개발 파이프라인 문서(recalculateJourney) 스펙에 따라 STEP7을 완료하면 edited는 항상 true —
+      // "실제로 값이 바뀌었는지"는 comparison(전후 type/policies 비교)으로 판단하고, edited 자체는
+      // "STEP7을 거쳐갔는지"를 나타낸다.
+      return {
+        ...state,
+        answers,
+        recommendation,
+        type_rule,
+        inference,
+        usage_report,
+        privacy_risk,
+        comparison,
+        edited: true,
+      };
+    }
+
+    case "COMPLETE_STEP8": {
+      return { ...state, result: action.result };
+    }
+
     case "RESET": {
       return { ...initialJourney };
     }
@@ -216,6 +241,8 @@ export function JourneyProvider({ children }) {
         dispatch({ type: "SET_INFERENCE_FEEDBACK", feedback }),
       completeStep6: (usage_report, privacy_risk) =>
         dispatch({ type: "COMPLETE_STEP6", usage_report, privacy_risk }),
+      completeStep7: (payload) => dispatch({ type: "COMPLETE_STEP7", ...payload }),
+      completeStep8: (result) => dispatch({ type: "COMPLETE_STEP8", result }),
       reset: () => dispatch({ type: "RESET" }),
     }),
     []
