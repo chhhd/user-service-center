@@ -3,7 +3,7 @@ export default function IntroScreen({ onStart }) {
     <div className="screen intro-screen">
       <div className="intro-badge">FINCOACH · 가상 체험</div>
       <h1 className="intro-title">
-        나에게 맞는 금융·청년정책,
+        나에게 맞는 금융 · 청년정책,
         <br />
         AI 코치가 찾아드려요
       </h1>

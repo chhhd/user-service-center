@@ -54,7 +54,13 @@ export default function App() {
   return (
     <JourneyProvider>
       <div className="app-shell">
-        <AppRoutes />
+        <div className="brand-pill"><span className="brand-mark">F</span><span>FinCoach</span></div>
+        <main className="experience-card">
+          <aside className="visual-panel" aria-hidden="true">
+            <img src="/fincoach-mascot-3d.png" alt="" />
+          </aside>
+          <section className="content-panel"><AppRoutes /></section>
+        </main>
       </div>
     </JourneyProvider>
   );
