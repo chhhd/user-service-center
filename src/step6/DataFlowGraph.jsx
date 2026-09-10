@@ -1,7 +1,7 @@
 import { DATA_FIELD_META } from "../shared/dataFieldMeta";
 
 // 목적별 정보 흐름 시각화.
-// 왼쪽(동의한 정보) -> 가운데(청년ON 추천) -> 오른쪽(제휴·광고, 장기 보관).
+// 왼쪽(동의한 정보) -> 가운데(MY:D 청년) -> 오른쪽(제휴·광고, 장기 보관).
 // 실제 선택값에 따라 각 정보의 흐름(추천 사용 / 추론만 / 미사용)을 색으로 구분하고,
 // 제공 대상이 없는 노드는 비활성화해 항상 데이터가 퍼지는 그림으로 왜곡되지 않게 한다.
 
@@ -40,8 +40,8 @@ export default function DataFlowGraph({ report }) {
 
       <div className="flow-col flow-col--hub">
         <div className="flow-node flow-node--hub">
-          <span className="flow-node-title">청년ON 금융 추천</span>
-          <span className="flow-node-count">{report.recommendation_used_count}개 사용</span>
+          <span className="flow-node-title">MY:D 청년</span>
+          <span className="flow-node-count"> {report.recommendation_used_count}개 사용</span>
         </div>
       </div>
 
@@ -49,13 +49,13 @@ export default function DataFlowGraph({ report }) {
         <div className={`flow-node${hasThirdParty ? "" : " flow-node--off"}`}>
           <span className="flow-node-title">제휴 금융사·광고회사</span>
           <span className="flow-node-count">
-            {hasThirdParty ? `제3자 제공 ${third_party_fields.length}개` : "제공 없음"}
+            {hasThirdParty ? ` 제3자 제공 ${third_party_fields.length}개` : " 제공 없음"}
           </span>
         </div>
         <div className={`flow-node${hasLongTerm ? "" : " flow-node--off"}`}>
           <span className="flow-node-title">장기 보관 저장소</span>
           <span className="flow-node-count">
-            {hasLongTerm ? `보관 대상 ${long_term_fields.length}개` : "보관 없음"}
+            {hasLongTerm ? ` 보관 대상 ${long_term_fields.length}개` : " 보관 없음"}
           </span>
         </div>
       </div>
